@@ -1,14 +1,22 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.7.0;
+pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "./ERC721PresetMinterPauserAutoId.sol";
 import "./ILobster.sol";
 import "./LobsterGeneGenerator.sol";
+import "./HasSecondarySaleFees.sol";
 
-contract Lobster is ILobster, ERC721PresetMinterPauserAutoId, ReentrancyGuard {
+contract Lobster is
+    ILobster,
+    ERC721PresetMinterPauserAutoId,
+    ReentrancyGuard,
+    HasSecondarySaleFees
+{
     using LobsterGeneGenerator for LobsterGeneGenerator.Gene;
     using SafeMath for uint256;
     using Counters for Counters.Counter;
@@ -16,6 +24,7 @@ contract Lobster is ILobster, ERC721PresetMinterPauserAutoId, ReentrancyGuard {
     LobsterGeneGenerator.Gene internal geneGenerator;
 
     address payable public daoAddress;
+    address payable public multiSig;
     uint256 public lobsterPrice;
     uint256 public maxSupply;
     uint256 public bulkBuyLimit;
@@ -51,14 +60,16 @@ contract Lobster is ILobster, ERC721PresetMinterPauserAutoId, ReentrancyGuard {
         uint256 _lobsterPrice,
         uint256 _maxSupply,
         uint256 _bulkBuyLimit,
-        string memory _arweaveAssetsJSON
-    ) public ERC721PresetMinterPauserAutoId(name, symbol, baseURI) {
+        string memory _arweaveAssetsJSON,
+        address payable _multiSig
+    ) ERC721PresetMinterPauserAutoId(name, symbol, baseURI) {
         daoAddress = _daoAddress;
         lobsterPrice = _lobsterPrice;
         maxSupply = _maxSupply;
         bulkBuyLimit = _bulkBuyLimit;
         arweaveAssetsJSON = _arweaveAssetsJSON;
         geneGenerator.random();
+        multiSig = _multiSig;
     }
 
     modifier onlyDAO() {
@@ -91,7 +102,7 @@ contract Lobster is ILobster, ERC721PresetMinterPauserAutoId, ReentrancyGuard {
         );
     }
 
-    function mint() public payable override nonReentrant {
+    function mint(Fee[] memory fees) public payable nonReentrant {
         require(_tokenIdTracker.current() < maxSupply, "Total supply reached");
 
         _tokenIdTracker.increment();
@@ -114,6 +125,7 @@ contract Lobster is ILobster, ERC721PresetMinterPauserAutoId, ReentrancyGuard {
         }
 
         _mint(_msgSender(), tokenId);
+        _registerFees(tokenId);
 
         emit TokenMinted(tokenId, _genes[tokenId]);
         emit TokenMorphed(
@@ -123,6 +135,14 @@ contract Lobster is ILobster, ERC721PresetMinterPauserAutoId, ReentrancyGuard {
             lobsterPrice,
             LobsterEventType.MINT
         );
+    }
+
+    function _registerFees(uint256 _tokenId) internal {
+        address[] memory recipients = new address[](1);
+        uint256[] memory bps = new uint256[](1);
+        recipients[0] = multiSig;
+        bps[0] = 200;
+        emit SecondarySaleFees(_tokenId, recipients, bps);
     }
 
     function bulkBuy(uint256 amount) public payable override nonReentrant {
@@ -226,6 +246,6 @@ contract Lobster is ILobster, ERC721PresetMinterPauserAutoId, ReentrancyGuard {
     }
 
     receive() external payable {
-        mint();
+        mint(new Fee[](0));
     }
 }

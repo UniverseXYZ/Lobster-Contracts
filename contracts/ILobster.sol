@@ -6,8 +6,6 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 interface ILobster is IERC721 {
     function geneOf(uint256 tokenId) external view returns (uint256 gene);
 
-    function mint() external payable;
-
     function bulkBuy(uint256 amount) external payable;
 
     function lastTokenId() external view returns (uint256 tokenId);
