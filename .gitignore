@@ -7,3 +7,4 @@ cache
 artifacts
 constructor-args.js
 hardhat.config.js
+deploy.sh

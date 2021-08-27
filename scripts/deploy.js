@@ -17,14 +17,15 @@ async function main() {
 	const tokenName = "Lobby Lobster";
   const tokenSymbol = "LOBSTER";
 	const metadataURI = "https://us-central1-polymorphmetadata.cloudfunctions.net/lobster-images-function-ropsten?id="
-	const arweaveContainer = "";
-	const DAOAddress = "0xa8047C2a86D5A188B0e15C3C10E2bc144cB272C2"
+	const DAOAddress = "0x75D38741878da8520d1Ae6db298A9BD994A5D241"
 	const lobsterPrice = ethers.utils.parseEther("0.01");
   const lobsterSupply = 10000;
-  const bulkBuyLimit = 20
+  const bulkBuyLimit = 20;
+	const arweaveContainer = "";
+  const multiSig = "0x75D38741878da8520d1Ae6db298A9BD994A5D241";
 
   const Lobster = await hre.ethers.getContractFactory("Lobster");
-  const lobster = await Lobster.deploy(tokenName, tokenSymbol, metadataURI, DAOAddress, lobsterPrice, lobsterSupply, bulkBuyLimit, arweaveContainer);
+  const lobster = await Lobster.deploy(tokenName, tokenSymbol, metadataURI, DAOAddress, lobsterPrice, lobsterSupply, bulkBuyLimit, arweaveContainer, multiSig);
 
   await lobster.deployed();
 
