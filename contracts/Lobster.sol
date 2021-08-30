@@ -143,7 +143,7 @@ contract Lobster is
 
         _recipients[0] = multiSig;
         //TODO: Maybe set it a state variable
-        _bps[0] = 200;
+        _bps[0] = 1000;
 
         Fee memory _fee = Fee({
             recipient: payable(_recipients[0]),
