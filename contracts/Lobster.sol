@@ -38,7 +38,7 @@ contract Lobster is
         Lobster.LobsterEventType eventType
     );
     event TokenMinted(uint256 indexed tokenId, uint256 newGene);
-    event PolymorphPriceChanged(uint256 newPolymorphPrice);
+    event LobsterPriceChanged(uint256 newLobsterPrice);
     event MaxSupplyChanged(uint256 newMaxSupply);
     event BulkBuyLimitChanged(uint256 newBulkBuyLimit);
     event BaseURIChanged(string baseURI);
@@ -102,7 +102,7 @@ contract Lobster is
         );
     }
 
-    function mint(Fee[] memory fees) public payable nonReentrant {
+    function mint() public payable override nonReentrant {
         require(_tokenIdTracker.current() < maxSupply, "Total supply reached");
 
         _tokenIdTracker.increment();
@@ -138,11 +138,18 @@ contract Lobster is
     }
 
     function _registerFees(uint256 _tokenId) internal {
-        address[] memory recipients = new address[](1);
-        uint256[] memory bps = new uint256[](1);
-        recipients[0] = multiSig;
-        bps[0] = 200;
-        emit SecondarySaleFees(_tokenId, recipients, bps);
+        address[] memory _recipients = new address[](1);
+        uint256[] memory _bps = new uint256[](1);
+
+        _recipients[0] = multiSig;
+        _bps[0] = 1000;
+
+        Fee memory _fee = Fee({
+            recipient: payable(_recipients[0]),
+            value: _bps[0]
+        });
+        fees[_tokenId].push(_fee);
+        emit SecondarySaleFees(_tokenId, _recipients, _bps);
     }
 
     function bulkBuy(uint256 amount) public payable override nonReentrant {
@@ -177,6 +184,7 @@ contract Lobster is
             uint256 tokenId = _tokenIdTracker.current();
             _genes[tokenId] = geneGenerator.random();
             _mint(_msgSender(), tokenId);
+            _registerFees(tokenId);
 
             emit TokenMinted(tokenId, _genes[tokenId]);
             emit TokenMorphed(
@@ -201,15 +209,15 @@ contract Lobster is
         revert("Should not use this one");
     }
 
-    function setPolymorphPrice(uint256 newPolymorphPrice)
+    function setLobsterPrice(uint256 newLobsterPrice)
         public
         virtual
         override
         onlyDAO
     {
-        lobsterPrice = newPolymorphPrice;
+        lobsterPrice = newLobsterPrice;
 
-        emit PolymorphPriceChanged(newPolymorphPrice);
+        emit LobsterPriceChanged(newLobsterPrice);
     }
 
     function setMaxSupply(uint256 _maxSupply) public virtual override onlyDAO {
@@ -246,6 +254,6 @@ contract Lobster is
     }
 
     receive() external payable {
-        mint(new Fee[](0));
+        mint();
     }
 }

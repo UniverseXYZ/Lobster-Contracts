@@ -5,5 +5,5 @@ abi
 #Hardhat files
 cache
 artifacts
-constructor-args.js
-hardhat.config.js
+.env.prod
+.env.test
