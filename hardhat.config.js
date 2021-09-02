@@ -12,13 +12,13 @@ require('dotenv').config()
 module.exports = {
   networks: {
       ropsten: {
-        url: `https://ropsten.infura.io/v3/${process.env.ETHERSCAN_API_ENDPOINT}`,
+        url: `https://ropsten.infura.io/v3/${process.env.INFURA_API_KEY}`,
         accounts: [process.env.WALLET_PK]
       },
       mainnet: {
-        url: `https://mainnet.infura.io/v3/${process.env.ETHERSCAN_API_ENDPOINT}`,
+        url: `https://mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`,
         accounts: [process.env.WALLET_PK]
-      }
+      },
     },
   etherscan: {
     apiKey: process.env.ETHERSCAN_API_KEY
