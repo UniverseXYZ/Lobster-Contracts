@@ -10,12 +10,24 @@ require('dotenv').config()
  * @type import('hardhat/config').HardhatUserConfig
  */
 module.exports = {
+  namedAccounts: {
+    deployer: {
+      default: 0, // here this will by default take the first account as deployer
+    },
+  },
   networks: {
       ropsten: {
+        chainId: 3,
         url: `https://ropsten.infura.io/v3/${process.env.INFURA_API_KEY}`,
         accounts: [process.env.WALLET_PK]
       },
+      rinkeby: {
+        chainId: 4,
+        url: `https://rinkeby.infura.io/v3/${process.env.INFURA_API_KEY}`,
+        accounts: [process.env.WALLET_PK]
+      },
       mainnet: {
+        chainId: 1,
         url: `https://mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`,
         accounts: [process.env.WALLET_PK]
       },
@@ -35,6 +47,11 @@ module.exports = {
         runs: 200,
       },
     },
+  },
+  contractSizer: {
+    alphaSort: true,
+    runOnCompile: true,
+    disambiguatePaths: false,
   },
   // abiExporter: {
   //   path: './abis',
