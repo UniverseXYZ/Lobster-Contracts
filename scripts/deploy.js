@@ -14,18 +14,19 @@ async function main() {
   // await hre.run('compile');
 
   // We get the contract to deploy
-	const tokenName = "Lobby Lobster";
-  const tokenSymbol = "LOBSTER";
-	const metadataURI = "https://us-central1-polymorphmetadata.cloudfunctions.net/lobster-images-function-ropsten?id="
-	const DAOAddress = "0x75D38741878da8520d1Ae6db298A9BD994A5D241"
-	const lobsterPrice = ethers.utils.parseEther("0.01");
-  const lobsterSupply = 10000;
-  const bulkBuyLimit = 20;
-	const arweaveContainer = "";
-  const multiSig = "0x75D38741878da8520d1Ae6db298A9BD994A5D241";
-
+  console.log("Starting deploy...")
   const Lobster = await hre.ethers.getContractFactory("Lobster");
-  const lobster = await Lobster.deploy(tokenName, tokenSymbol, metadataURI, DAOAddress, lobsterPrice, lobsterSupply, bulkBuyLimit, arweaveContainer, multiSig);
+  const lobster = await Lobster.deploy(
+    process.env.COLLECTION_NAME,
+    process.env.TOKEN_NAME,
+    process.env.METADATA_URI,
+    process.env.DAO_ADDRESS,
+    ethers.utils.parseEther(process.env.MINT_PRICE),
+    process.env.LOBSTER_SUPPLY,
+    process.env.BULK_BUY_LIMIT,
+    process.env.ARWEAVE_ADDRESS,
+    process.env.MULTISIG_ADDRESS
+  );
 
   await lobster.deployed();
 
