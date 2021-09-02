@@ -44,3 +44,7 @@ The main contract acting as an ERC721 but also carrying the minting logic.
 ## LobsterGeneGenerator
 
 The library used for randomness generation.
+
+## HasSecondarySalesFees
+
+Contract that will redirect 10% of the secondary resale price of lobster to multisig address. The accumulated fees will also be donated to crypto regulation campaigns.
