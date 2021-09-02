@@ -38,7 +38,7 @@ contract Lobster is
         Lobster.LobsterEventType eventType
     );
     event TokenMinted(uint256 indexed tokenId, uint256 newGene);
-    event PolymorphPriceChanged(uint256 newPolymorphPrice);
+    event LobsterPriceChanged(uint256 newLobsterPrice);
     event MaxSupplyChanged(uint256 newMaxSupply);
     event BulkBuyLimitChanged(uint256 newBulkBuyLimit);
     event BaseURIChanged(string baseURI);
@@ -210,15 +210,15 @@ contract Lobster is
         revert("Should not use this one");
     }
 
-    function setPolymorphPrice(uint256 newPolymorphPrice)
+    function setLobsterPrice(uint256 newLobsterPrice)
         public
         virtual
         override
         onlyDAO
     {
-        lobsterPrice = newPolymorphPrice;
+        lobsterPrice = newLobsterPrice;
 
-        emit PolymorphPriceChanged(newPolymorphPrice);
+        emit LobsterPriceChanged(newLobsterPrice);
     }
 
     function setMaxSupply(uint256 _maxSupply) public virtual override onlyDAO {

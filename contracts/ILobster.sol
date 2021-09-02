@@ -12,7 +12,7 @@ interface ILobster is IERC721 {
 
     function lastTokenId() external view returns (uint256 tokenId);
 
-    function setPolymorphPrice(uint256 newPolymorphPrice) external;
+    function setLobsterPrice(uint256 newLobsterPrice) external;
 
     function setMaxSupply(uint256 maxSupply) external;
 
