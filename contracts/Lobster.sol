@@ -142,7 +142,6 @@ contract Lobster is
         uint256[] memory _bps = new uint256[](1);
 
         _recipients[0] = multiSig;
-        //TODO: Maybe set it a state variable
         _bps[0] = 1000;
 
         Fee memory _fee = Fee({
